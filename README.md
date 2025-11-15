@@ -34,5 +34,5 @@ This is a small hobby project for now, and will only cover basic/simple plotting
 
 ## Minimum Supported Rust Version
 - **MSRV: v1.93.0-nightly**
-> ![NOTE]
+> [!NOTE]
 > Chartrs has mainly been developed using Rust Nightly, and has only been verified on that channel for now. It likely works on stable rust as well though.
