@@ -2,6 +2,8 @@
 
 Chartrs is aiming to be a pure-Rust plotting library with a concise dependency tree. Uses `raqote` as the rendering backend, optionally uses `rusttype` for fonts, and `minifb` to display plots interactively.
 
+This is a small hobby project for now, and will only cover basic/simple plotting tasks for the time being.
+
 ## Capabilities
 
 - [x] Plot to window
@@ -29,3 +31,8 @@ Chartrs is aiming to be a pure-Rust plotting library with a concise dependency t
 - `minifb`: A cross-platform window setup library (https://crates.io/crates/minifb)
 ### Text Support
 - `rusttype`: Rust font loading library (https://crates.io/crates/rusttype)
+
+## Minimum Supported Rust Version
+- **MSRV: v1.93.0-nightly**
+> ![NOTE]
+> Chartrs has mainly been developed using Rust Nightly, and has only been verified on that channel for now. It likely works on stable rust as well though.
