@@ -54,8 +54,13 @@ impl std::fmt::Debug for TextRenderBuffer<'_> {
     }
 }
 
-/// The default font used.
-pub const DEFAULT_FONT_PATH: &str = "./fonts/hack-regular.ttf"; // Hack font, see: https://sourcefoundry.org/hack/
+/// The default font used. Hack font, see: https://sourcefoundry.org/hack/
+pub const DEFAULT_FONT_FILE: &[u8] = include_bytes!("../fonts/hack-regular.ttf");
+
+/// Load the default font
+pub fn default_font() -> Font<'static> {
+    rusttype::Font::try_from_bytes(DEFAULT_FONT_FILE).unwrap()
+}
 
 /// Load a font from a file
 pub fn load_font<'a>(path: &str) -> Option<Font<'a>> {
