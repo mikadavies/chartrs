@@ -15,7 +15,7 @@ pub fn plot_interactive(plot: &Plot) -> Option<()> {
     window.set_target_fps(30);
 
     window
-        .update_with_buffer(&plot.canvas.get_data(), width, height)
+        .update_with_buffer(plot.canvas.get_data(), width, height)
         .map_err(|err| println!("[ERROR] Failed to draw interactive plot: {err}"))
         .ok()?;
 

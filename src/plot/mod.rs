@@ -179,13 +179,9 @@ pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
         if let Some(xlabel) = xconfig.label
             && let Some(font) = xconfig.font
         {
-            let textbuf: TextRenderBuffer = TextRenderBuffer::new(
-                xlabel,
-                14,
-                xconfig.text_colour.unwrap_or(TextColour::default()),
-                font,
-            )
-            .expect("Failed to create text buffer for xlabel");
+            let textbuf: TextRenderBuffer =
+                TextRenderBuffer::new(xlabel, 14, xconfig.text_colour.unwrap_or_default(), font)
+                    .expect("Failed to create text buffer for xlabel");
 
             textbuf.render(
                 &mut plot.canvas,
@@ -201,13 +197,9 @@ pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
         {
             use euclid::{Angle, Transform2D, Vector2D};
 
-            let textbuf: TextRenderBuffer = TextRenderBuffer::new(
-                ylabel,
-                14,
-                yconfig.text_colour.unwrap_or(TextColour::default()),
-                font,
-            )
-            .expect("Failed to create text buffer for xlabel");
+            let textbuf: TextRenderBuffer =
+                TextRenderBuffer::new(ylabel, 14, yconfig.text_colour.unwrap_or_default(), font)
+                    .expect("Failed to create text buffer for xlabel");
 
             plot.canvas
                 .set_transform(&Transform2D::rotation(Angle::degrees(-90.)).then_translate(
@@ -238,7 +230,7 @@ pub fn plot_axis_ticks(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConf
         let ticks_canvas_coords =
             Vec::from_iter(ticks_in_canvas_coordinates(plot, ticks_plot_coords.iter()));
         for (tick_canvas, tick_plot) in ticks_canvas_coords.iter().zip(ticks_plot_coords) {
-            render_tick_label(plot, true, false, &tick_plot, &tick_canvas, xconfig);
+            render_tick_label(plot, true, false, &tick_plot, tick_canvas, xconfig);
             draw_axis_tick(&mut pb, true, false, *tick_canvas, tick_size);
         }
     }
@@ -266,7 +258,7 @@ pub fn plot_axis_ticks(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConf
         let ticks_canvas_coords =
             Vec::from_iter(ticks_in_canvas_coordinates(plot, ticks_plot_coords.iter()));
         for (tick_canvas, tick_plot) in ticks_canvas_coords.iter().zip(ticks_plot_coords) {
-            render_tick_label(plot, false, true, &tick_plot, &tick_canvas, yconfig);
+            render_tick_label(plot, false, true, &tick_plot, tick_canvas, yconfig);
             draw_axis_tick(&mut pb, false, true, *tick_canvas, tick_size);
         }
     }
@@ -393,7 +385,7 @@ fn ticks_in_canvas_coordinates<'a>(
     let min: Point2d = Point2d::new(plot.extent.xmin.unwrap(), plot.extent.ymin.unwrap());
     let max: Point2d = Point2d::new(plot.extent.xmax.unwrap(), plot.extent.ymax.unwrap());
 
-    plot_coord_ticks.map(move |point| scatter::to_plot_coordinates(plot, &point, &min, &max))
+    plot_coord_ticks.map(move |point| scatter::to_plot_coordinates(plot, point, &min, &max))
 }
 
 #[cfg(feature = "text")]
@@ -412,13 +404,9 @@ fn render_tick_label(
 
         let label: String = format!("{:.2}", if xaxis { point_plot.x } else { point_plot.y });
 
-        let textbuf: TextRenderBuffer = TextRenderBuffer::new(
-            &label,
-            12,
-            config.text_colour.unwrap_or(TextColour::default()),
-            font,
-        )
-        .expect("Failed to create text buffer for xlabel");
+        let textbuf: TextRenderBuffer =
+            TextRenderBuffer::new(&label, 12, config.text_colour.unwrap_or_default(), font)
+                .expect("Failed to create text buffer for xlabel");
 
         textbuf.render(
             &mut plot.canvas,

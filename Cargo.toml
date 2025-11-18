@@ -2,6 +2,11 @@
 name = "chartrs"
 version = "0.1.0"
 edition = "2024"
+authors = ["Mika Davies <mika.davies.nt@gmail.com>"]
+description = "A simple and customisable plotting library. [WIP]"
+repository = "https://github.com/mikadavies/chartrs"
+readme = "README.md"
+license = "MIT"
 
 [dependencies]
 euclid = "0.22.11"
@@ -20,17 +25,3 @@ wayland     = ["minifb/wayland", "minifb/dlopen"]
 x11         = ["minifb/x11"]
 # Miscellaneous
 unstable = ["euclid/unstable"]
-
-[profile.dev]
-lto = "off"
-opt-level = 1
-
-[profile.dev.package."*"]
-opt-level = 3
-
-[profile.release]
-codegen-units = 1
-lto = "fat"
-panic = "abort"
-strip = "symbols"
-opt-level = 3

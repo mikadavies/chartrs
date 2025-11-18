@@ -45,7 +45,7 @@ pub fn scatter(plot: &mut Plot, data: &[Point2d], config: ScatterConfig) {
 
     for point in data {
         // let point: Point2d = scale_to_canvas(point, &min, &max, &canvas_dims);
-        let point: Point2d = to_plot_coordinates(plot, &point, &min, &max);
+        let point: Point2d = to_plot_coordinates(plot, point, &min, &max);
         match config.marker {
             Marker::Circle => circle(&mut pb, point, 0.5 * config.marker_size),
             Marker::Square => square(&mut plot.canvas, point, config.marker_size, config.colour),
