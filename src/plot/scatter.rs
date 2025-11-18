@@ -26,13 +26,26 @@ pub enum Marker {
 
 pub fn scatter(plot: &mut Plot, data: &[Point2d], config: ScatterConfig) {
     let [min, max]: [Point2d; 2] = get_data_range(data);
-    let canvas_dims: Point2d =
-        Point2d::new(plot.canvas.width() as f32, plot.canvas.height() as f32);
+
+    // Update plot extents if unset
+    if plot.extent.xmin.is_none() {
+        plot.extent.xmin = Some(min.x);
+    }
+    if plot.extent.xmax.is_none() {
+        plot.extent.xmax = Some(max.x);
+    }
+    if plot.extent.ymin.is_none() {
+        plot.extent.ymin = Some(min.y);
+    }
+    if plot.extent.ymax.is_none() {
+        plot.extent.ymax = Some(max.y);
+    }
 
     let mut pb: PathBuilder = PathBuilder::new();
 
     for point in data {
-        let point: Point2d = scale_to_canvas(point, &min, &max, &canvas_dims);
+        // let point: Point2d = scale_to_canvas(point, &min, &max, &canvas_dims);
+        let point: Point2d = to_plot_coordinates(plot, &point, &min, &max);
         match config.marker {
             Marker::Circle => circle(&mut pb, point, 0.5 * config.marker_size),
             Marker::Square => square(&mut plot.canvas, point, config.marker_size, config.colour),
@@ -54,19 +67,6 @@ pub fn scatter(plot: &mut Plot, data: &[Point2d], config: ScatterConfig) {
                 .stroke(&path, src, &StrokeStyle::default(), &DrawOptions::new()),
         }
     }
-}
-
-pub(crate) fn scale_to_canvas(
-    point: &Point2d,
-    min: &Point2d,
-    max: &Point2d,
-    canvas_dims: &Point2d,
-) -> Point2d {
-    // New point with 7.5% display margin
-    Point2d::new(
-        (point.x - min.x) / (max.x - min.x) * 0.85 * canvas_dims.x + 0.075 * canvas_dims.x,
-        (point.y - min.y) / (max.y - min.y) * 0.85 * canvas_dims.y + 0.075 * canvas_dims.y,
-    )
 }
 
 pub(crate) fn get_data_range(data: &[Point2d]) -> [Point2d; 2] {
@@ -92,4 +92,29 @@ pub(crate) fn get_data_range(data: &[Point2d]) -> [Point2d; 2] {
         .y;
 
     [Point2d::new(min_x, min_y), Point2d::new(max_x, max_y)]
+}
+
+pub fn to_plot_coordinates(
+    plot: &Plot,
+    point: &Point2d,
+    min_value: &Point2d,
+    max_value: &Point2d,
+) -> Point2d {
+    let [top_left, bottom_right]: [Point2d; 2] = plot.bbox();
+
+    let xval_min: f32 = plot.extent.xmin.unwrap_or(min_value.x);
+    let yval_min: f32 = plot.extent.ymin.unwrap_or(min_value.y);
+    let xval_max: f32 = plot.extent.xmax.unwrap_or(max_value.x);
+    let yval_max: f32 = plot.extent.ymax.unwrap_or(max_value.y);
+
+    let offset: Point2d = plot.origin();
+    let scaling_factor: Point2d = Point2d::new(
+        (bottom_right.x - top_left.x) / (xval_max - xval_min),
+        (top_left.y - bottom_right.y) / (yval_max - yval_min),
+    );
+
+    Point2d::new(
+        scaling_factor.x * (point.x - xval_min) + offset.x,
+        scaling_factor.y * (point.y - yval_min) + offset.y,
+    )
 }
