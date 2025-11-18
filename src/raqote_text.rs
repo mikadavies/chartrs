@@ -8,7 +8,8 @@ use rusttype::{Font, PositionedGlyph, VMetrics};
 
 use crate::{colours::TextColour, shapes::Point2d};
 
-pub(crate) struct TextRenderBuffer<'a> {
+/// A struct containing text rendering information
+pub struct TextRenderBuffer<'a> {
     pub width: i32,
     pub height: i32,
     pub baseline: i32,
@@ -17,6 +18,7 @@ pub(crate) struct TextRenderBuffer<'a> {
 }
 
 impl TextRenderBuffer<'_> {
+    /// Turn a `TextRenderBuffer` into an image
     pub fn into_image(&'_ self) -> raqote::Image<'_> {
         raqote::Image {
             width: self.width,
@@ -25,6 +27,7 @@ impl TextRenderBuffer<'_> {
         }
     }
 
+    /// Render a `TextRenderBuffer` on a canvas at a given position
     pub fn render(&self, canvas: &mut DrawTarget, pos: Point2d) {
         canvas.draw_image_at(
             pos.x,
@@ -51,7 +54,10 @@ impl std::fmt::Debug for TextRenderBuffer<'_> {
     }
 }
 
+/// The default font used.
 pub const DEFAULT_FONT_PATH: &str = "./fonts/hack-regular.ttf"; // Hack font, see: https://sourcefoundry.org/hack/
+
+/// Load a font from a file
 pub fn load_font<'a>(path: &str) -> Option<Font<'a>> {
     rusttype::Font::try_from_vec(
         std::fs::read(path)
@@ -61,6 +67,7 @@ pub fn load_font<'a>(path: &str) -> Option<Font<'a>> {
 }
 
 impl<'a> TextRenderBuffer<'a> {
+    /// Create a new `TextRenderBuffer` from a `&str`
     pub fn new(text: &'a str, size: i32, colour: TextColour, font: &Font) -> Option<Self> {
         let scale: rusttype::Scale = rusttype::Scale::uniform(size as f32 * 1.333);
         let vmetrics: VMetrics = font.v_metrics(scale);

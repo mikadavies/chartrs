@@ -6,16 +6,23 @@ use crate::{
     shapes::Point2d,
 };
 
+/// Scatter plot functions
 pub mod scatter;
 
+/// Generic `Plot` struct on which to draw.
 pub struct Plot {
+    /// The canvas on which the plot is drawn
     pub canvas: DrawTarget,
-    pub extent: PlotExtent, // [xmin,ymin : xmax,ymax]
+    /// The range of the visible plot. Will automatically scale to fit the data if not specified
+    pub extent: PlotExtent,
+    /// The margins between the plot area and the edge of the canvas (as a fraction of the entire canvas)
     pub margins: Margins,
-    pub max_label_offset: Point2d,
-    _background_colour: SolidColour,
+    /// The background colour for the canvas
+    pub background_colour: SolidColour,
+    max_label_offset: Point2d,
 }
 
+/// The extents of a plot in plot (data) coordinates.
 pub struct PlotExtent {
     pub xmin: Option<f32>,
     pub xmax: Option<f32>,
@@ -33,6 +40,7 @@ impl Default for PlotExtent {
     }
 }
 
+/// The margins of a plot as a fraction of the canvas dimensions.
 pub struct Margins {
     pub left: f32,
     pub right: f32,
@@ -51,6 +59,7 @@ impl Default for Margins {
 }
 
 impl Plot {
+    /// Create a new plot with a specified width, height, background colour, plotted coordinate range, and margins.
     pub fn new(
         width: i32,
         height: i32,
@@ -70,10 +79,11 @@ impl Plot {
             extent,
             margins,
             max_label_offset: Point2d::zero(),
-            _background_colour: background_colour,
+            background_colour: background_colour,
         }
     }
 
+    /// Get the canvas coordinates of the plot origin.
     pub fn origin(&self) -> Point2d {
         // Origin coordinates (slightly offset from 0,0 on graph)
         Point2d::new(
@@ -82,7 +92,7 @@ impl Plot {
         )
     }
 
-    // Top Left, Bottom Right
+    /// Get the plot bounding box in canvas coordinates as two points: `[top_left, bottom_right]`
     pub fn bbox(&self) -> [Point2d; 2] {
         [
             Point2d::new(
@@ -97,24 +107,38 @@ impl Plot {
     }
 }
 
+/// Axis configuration struct.
 pub struct AxisConfig<'a> {
+    /// Whether or not the axis should be drawn
     pub show: bool,
+    /// The axis label, if applicable (requires `text` feature to display)
     pub label: Option<&'a str>,
+    /// The colour of the axis, if applicable
     pub axis_colour: Option<SolidColour>,
+    /// The colour of the axis text (e.g. axis label, tick labels)
     pub text_colour: Option<TextColour>,
+    /// Axis ticks options
     pub ticks: AxisTicks<'a>,
+    /// Axis tick size, in canvas coordinates, if applicable
     pub tick_size: Option<f32>,
     #[cfg(feature = "text")]
+    /// The font with which to draw the text, if applicable (requires `text` feature)
     pub font: Option<&'a Font<'a>>,
 }
 
+/// Axis ticks configuration enum
 pub enum AxisTicks<'a> {
+    /// No axis ticks
     None,
+    /// A specific number of ticks
     Count(usize),
+    /// Ticks every so often (interval in plot/data coordinates)
     Interval(f32),
+    /// Ticks at specified x/y values (specified in plot/data coordinates)
     Values(&'a [f32]),
 }
 
+/// Draw the axes on a plot
 pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
     let origin: Point2d = plot.origin();
     let [top_left, bottom_right]: [Point2d; 2] = plot.bbox();
@@ -222,6 +246,7 @@ pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
 // Currently does not support dynamic resizing if multiple series are plotted
 // Iterator and mutable variable fuckery going on here, so temporarily resorted to collecting iterators into `Vec`s. TODO: Fix and use iterators directly
 // Currently clips through axis labels, as they are not considered. TODO: Fix that.
+/// Plot ticks on axes
 pub fn plot_axis_ticks(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
     // X-axis
     let mut pb: PathBuilder = PathBuilder::new();

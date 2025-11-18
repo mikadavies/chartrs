@@ -4,6 +4,7 @@ use minifb::{Key, Window, WindowOptions};
 
 use crate::plot::Plot;
 
+/// Display the plot in a window
 pub fn plot_interactive(plot: &Plot) -> Option<()> {
     let width: usize = plot.canvas.width() as usize;
     let height: usize = plot.canvas.height() as usize;

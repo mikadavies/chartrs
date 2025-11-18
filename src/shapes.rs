@@ -2,6 +2,7 @@ use raqote::{DrawTarget, PathBuilder};
 
 use crate::colours::SolidColour;
 
+/// Simplified reexport of `euclid::Point2D` for `f32` types
 pub type Point2d = euclid::Point2D<f32, euclid::UnknownUnit>;
 
 pub fn circle(pb: &mut PathBuilder, center: Point2d, radius: f32) {

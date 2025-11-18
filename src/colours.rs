@@ -1,5 +1,6 @@
 use raqote::{Color, SolidSource};
 
+/// Wrapper for `raqote`'s `SolidSource`
 #[repr(transparent)]
 #[derive(Clone, Copy)]
 pub struct SolidColour {
@@ -37,12 +38,14 @@ impl SolidColour {
     }
 }
 
+/// THe type of content, used to select colours from colour palettes (todo)
 pub enum ColourContent {
     Background,
     Foreground1,
     Foreground2,
 }
 
+/// A wrapper for `raqote`'s `Color`
 #[repr(transparent)]
 #[derive(Clone, Copy)]
 pub struct TextColour {

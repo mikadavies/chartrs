@@ -6,24 +6,38 @@ use crate::{
     shapes::{Point2d, circle, cross, diamond, plus, square, triangle_down, triangle_up},
 };
 
+/// Aesthetic configuration for a scatter plot
 pub struct ScatterConfig {
+    /// The shape of the scatter plot marker
     pub marker: Marker,
+    /// The size of the scatter plot marker (in canvas coordinates)
     pub marker_size: f32,
+    /// The colour of the scatter plot marker
     pub colour: SolidColour,
+    /// Whether the markers should be filled or outlined. The `Cross` and `Plus` marker shapes only support outlined (`false`).
     pub fill: bool,
 }
 
+/// The different marker shapes
 #[derive(PartialEq, Eq)]
 pub enum Marker {
+    ///  ●
     Circle,
+    /// ■
     Square,
+    /// ▲
     TriangleUp,
+    /// ▼
     TriangleDown,
+    /// ×
     Cross,
+    /// +
     Plus,
+    /// ◆
     Diamond,
 }
 
+/// Draw a scatter plot based on a collection of points (in plot/data coordinates)
 pub fn scatter(plot: &mut Plot, data: &[Point2d], config: ScatterConfig) {
     let [min, max]: [Point2d; 2] = get_data_range(data);
 
@@ -94,6 +108,7 @@ pub(crate) fn get_data_range(data: &[Point2d]) -> [Point2d; 2] {
     [Point2d::new(min_x, min_y), Point2d::new(max_x, max_y)]
 }
 
+/// Convert plot/data coordinates to canvas coordinates
 pub fn to_plot_coordinates(
     plot: &Plot,
     point: &Point2d,
