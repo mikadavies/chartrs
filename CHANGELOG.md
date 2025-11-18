@@ -17,4 +17,7 @@
 - Added text rendering
 - Added axes rendering function `draw_axes()`
 - Added axis configuration `AxisConfig`
+- Extended axis configuration: automatic vs manual axis extents
+- Added axis ticks
+- Added axis tick labels
 - Added plot window output
