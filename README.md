@@ -1,6 +1,6 @@
 # Chartrs
 
-[![Minimum Supported Rust Version]][Rust 1.93.0-nightly]
+<!-- [![Minimum Supported Rust Version]][Rust 1.93.0-nightly] -->
 
 Chartrs is aiming to be a pure-Rust plotting library with a concise dependency tree. Uses `raqote` as the rendering backend, optionally uses `rusttype` for fonts, and `minifb` to display plots interactively.
 
