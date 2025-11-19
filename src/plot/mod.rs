@@ -6,6 +6,10 @@ use crate::{
     shapes::Point2d,
 };
 
+// For dev
+pub mod renewed_axes;
+pub mod renewed_framework;
+pub mod renewed_scatter;
 /// Scatter plot functions
 pub mod scatter;
 
@@ -217,7 +221,7 @@ pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
                 &mut plot.canvas,
                 Point2d::new(
                     width * 0.5 - textbuf.width as f32 * 0.5,
-                    origin.y + 2.0 * textbuf.height as f32 * 0.5 + plot.label_offset.x,
+                    origin.y + textbuf.height as f32 * 0.75 + plot.label_offset.x,
                 ),
             );
         }
@@ -234,7 +238,7 @@ pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
             plot.canvas
                 .set_transform(&Transform2D::rotation(Angle::degrees(-90.)).then_translate(
                     Vector2D::new(
-                        origin.x - 1.5 * textbuf.height as f32 - plot.label_offset.y,
+                        origin.x - 1.25 * textbuf.height as f32 - plot.label_offset.y,
                         height * 0.5 + textbuf.width as f32 * 0.5,
                     ),
                 ));

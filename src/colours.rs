@@ -2,7 +2,7 @@ use raqote::{Color, SolidSource};
 
 /// Wrapper for `raqote`'s `SolidSource`
 #[repr(transparent)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct SolidColour {
     pub src: SolidSource,
 }
@@ -56,6 +56,66 @@ impl Default for TextColour {
     fn default() -> Self {
         Self {
             src: Color::new(u8::MAX, 144, 140, 170),
+        }
+    }
+}
+
+pub struct ColourPalette {
+    pub background: SolidColour,
+    pub axes: SolidColour,
+    pub series1: SolidColour,
+    pub series2: SolidColour,
+    pub series3: SolidColour,
+    pub text1: TextColour,
+    pub text2: TextColour,
+}
+
+impl Default for ColourPalette {
+    fn default() -> Self {
+        Self {
+            background: SolidColour {
+                src: raqote::SolidSource {
+                    r: 42,
+                    g: 39,
+                    b: 63,
+                    a: u8::MAX,
+                },
+            },
+
+            axes: SolidColour {
+                src: raqote::SolidSource {
+                    r: 144,
+                    g: 140,
+                    b: 170,
+                    a: u8::MAX / 2,
+                },
+            },
+            series1: SolidColour {
+                src: raqote::SolidSource {
+                    r: 144,
+                    g: 140,
+                    b: 170,
+                    a: u8::MAX,
+                },
+            },
+            series2: SolidColour {
+                src: raqote::SolidSource {
+                    r: 234,
+                    g: 154,
+                    b: 151,
+                    a: u8::MAX,
+                },
+            },
+            series3: SolidColour {
+                src: raqote::SolidSource {
+                    r: 234,
+                    g: 154,
+                    b: 151,
+                    a: u8::MAX,
+                },
+            },
+            text1: Default::default(),
+            text2: Default::default(),
         }
     }
 }
