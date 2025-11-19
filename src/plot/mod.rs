@@ -455,3 +455,9 @@ fn render_tick_label(
         );
     }
 }
+
+#[cfg(feature = "png")]
+/// Exports a plot to a PNG file. Requires the `png` feature.
+pub fn export_png(plot: &Plot, path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    Ok(plot.canvas.write_png(path)?)
+}
