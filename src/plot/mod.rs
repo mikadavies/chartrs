@@ -19,7 +19,8 @@ pub struct Plot {
     pub margins: Margins,
     /// The background colour for the canvas
     pub background_colour: SolidColour,
-    max_label_offset: Point2d,
+    max_tick_offset: Point2d,
+    label_offset: Point2d,
 }
 
 /// The extents of a plot in plot (data) coordinates.
@@ -78,8 +79,9 @@ impl Plot {
             canvas,
             extent,
             margins,
-            max_label_offset: Point2d::zero(),
             background_colour: background_colour,
+            max_tick_offset: Point2d::zero(),
+            label_offset: Point2d::zero(),
         }
     }
 
@@ -188,9 +190,13 @@ pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
     );
 
     plot_axis_ticks(plot, xconfig, yconfig);
-    plot.max_label_offset = Point2d::new(
-        plot.max_label_offset.x + 0.5 * xconfig.tick_size.unwrap_or(0.0),
-        plot.max_label_offset.y + 0.5 * yconfig.tick_size.unwrap_or(0.0),
+    plot.max_tick_offset = Point2d::new(
+        plot.max_tick_offset.x + 0.5 * xconfig.tick_size.unwrap_or(0.0),
+        plot.max_tick_offset.y + 0.5 * yconfig.tick_size.unwrap_or(0.0),
+    );
+    plot.label_offset = Point2d::new(
+        plot.label_offset.x + plot.max_tick_offset.x,
+        plot.label_offset.y + plot.max_tick_offset.y,
     );
 
     #[cfg(feature = "text")]
@@ -211,7 +217,7 @@ pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
                 &mut plot.canvas,
                 Point2d::new(
                     width * 0.5 - textbuf.width as f32 * 0.5,
-                    origin.y + 2.0 * textbuf.height as f32 * 0.5 + plot.max_label_offset.x,
+                    origin.y + 2.0 * textbuf.height as f32 * 0.5 + plot.label_offset.x,
                 ),
             );
         }
@@ -228,7 +234,7 @@ pub fn draw_axes(plot: &mut Plot, xconfig: &AxisConfig, yconfig: &AxisConfig) {
             plot.canvas
                 .set_transform(&Transform2D::rotation(Angle::degrees(-90.)).then_translate(
                     Vector2D::new(
-                        origin.x - 1.5 * textbuf.height as f32 - plot.max_label_offset.y,
+                        origin.x - 1.5 * textbuf.height as f32 - plot.label_offset.y,
                         height * 0.5 + textbuf.width as f32 * 0.5,
                     ),
                 ));
@@ -436,7 +442,8 @@ fn render_tick_label(
         textbuf.render(
             &mut plot.canvas,
             if xaxis {
-                plot.max_label_offset.x = plot.max_label_offset.x.max(textbuf.height as f32);
+                plot.max_tick_offset.x = plot.max_tick_offset.x.max(textbuf.height as f32);
+                plot.label_offset.x = plot.label_offset.x.max(textbuf.height as f32);
                 Point2d::new(
                     point_canvas.x - 0.5 * textbuf.width as f32,
                     point_canvas.y
@@ -444,7 +451,8 @@ fn render_tick_label(
                         + 0.5 * config.tick_size.unwrap_or(10.0),
                 )
             } else {
-                plot.max_label_offset.y = plot.max_label_offset.y.max(textbuf.width as f32);
+                plot.max_tick_offset.y = plot.max_tick_offset.y.max(textbuf.width as f32);
+                plot.label_offset.y = plot.label_offset.y.max(1.25 * textbuf.width as f32);
                 Point2d::new(
                     point_canvas.x
                         - 1.25 * textbuf.width as f32
